@@ -33,8 +33,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.currencyconverter.ui.theme.CurrencyConverterTheme
 import androidx.compose.ui.unit.dp
 import androidx.activity.viewModels
+import androidx.compose.foundation.focusable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.input.pointer.pointerInput
 import com.example.currencyconverter.viewmodel.CurrencyViewModel
 
 
@@ -65,10 +67,10 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
         mutableStateOf("")
     }
     var fromCountry by remember{
-        mutableStateOf("USA")
+        mutableStateOf("GBP")
     }
     var toCountry by remember{
-        mutableStateOf("India")
+        mutableStateOf("USD")
     }
 
     val conversionResult  by currencyViewModel.conversionResult.observeAsState()//step 3 - observing the conversion result from viewmodel
@@ -77,7 +79,34 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
         Log.d("CurrencyConverterUI","ConversionResult: $conversionResult")
     }
     
-    val countries = listOf("USA","UK","UAE")
+    val countries = listOf(
+        "AUD - Australia",
+        "CAD - Canada",
+        "PLN - Poland",
+        "USD - United States",
+        "EUR - Eurozone",
+        "JPY - Japan",
+        "GBP - United Kingdom",
+        "CHF - Switzerland",
+        "CNY - China",
+        "INR - India",
+        "BRL - Brazil",
+        "ZAR - South Africa",
+        "MXN - Mexico",
+        "KRW - South Korea",
+        "SGD - Singapore",
+        "NZD - New Zealand",
+        "SEK - Sweden",
+        "NOK - Norway",
+        "DKK - Denmark",
+        "RUB - Russia",
+        "SAR - Saudi Arabia",
+        "AED - United Arab Emirates",
+        "KWD - Kuwait",
+        "OMR - Oman",
+        "BHD - Bahrain",
+        "QAR - Qatar"
+    )
 
     Column (
         modifier = Modifier
@@ -115,9 +144,13 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        val sendFromCountry = fromCountry.substring(0,3)
+        val sendToCountry = toCountry.substring(0,3)
+
         Button(onClick = { //step 4 - triggering the conversion on button click
             if(amount.isNotEmpty()){
-                currencyViewModel.convertCurrency(fromCountry,toCountry,amount.toDouble())//telling the viewmodel to perform conversion
+                Log.d("CurrencyConverterUI","Button Clicked , calling convertCurrency")
+                currencyViewModel.convertCurrency(sendFromCountry,sendToCountry,amount.toDouble())//telling the viewmodel to perform conversion
             }
         }) {
             Text("CONVERT")
@@ -126,12 +159,13 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         //step 5 - displaying the converted amount
-        val convertedAmount = conversionResult?.rates?.get(toCountry)
+        //val convertedAmount = conversionResult?.rates?.get(toCountry)
         TextField(
-            value = convertedAmount?.toString() ?:"",
+            value = conversionResult?.toString() ?:"",
             onValueChange = {},
             label = {Text("Converted amount")} ,
-            readOnly = true
+            readOnly = true ,
+            //modifier = Modifier.clickable{}.focusable(false)
         )
     }
 
