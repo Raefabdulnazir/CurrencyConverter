@@ -34,9 +34,11 @@ import com.example.currencyconverter.ui.theme.CurrencyConverterTheme
 import androidx.compose.ui.unit.dp
 import androidx.activity.viewModels
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.currencyconverter.viewmodel.CurrencyViewModel
 
 
@@ -111,13 +113,13 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ){
         Text(text = "Currency Converter", style = MaterialTheme.typography.headlineLarge)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         CountryDropDownMenu(
             label = "From Country",
@@ -126,7 +128,7 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
             countries = countries
             )
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         CountryDropDownMenu(
             label = "To Country",
@@ -135,14 +137,18 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
             countries = countries
         )
 
-        Spacer(modifier = Modifier.height(64.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         TextField(
             value = amount,//binding the amount state variable
             onValueChange = {newAmount -> amount = newAmount},//updating the amount state variable with new input
-            label = {Text("Enter amount")})
+            label = {Text("Enter amount")},
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true ,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)//this is to only show numbers in the keyboard
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         val sendFromCountry = fromCountry.substring(0,3)
         val sendToCountry = toCountry.substring(0,3)
@@ -156,22 +162,20 @@ fun CurrencyConverterUI(currencyViewModel : CurrencyViewModel) {
             Text("CONVERT")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         //step 5 - displaying the converted amount
         //val convertedAmount = conversionResult?.rates?.get(toCountry)
         TextField(
             value = conversionResult?.toString() ?:"",
             onValueChange = {},
+            enabled = false,
             label = {Text("Converted amount")} ,
             readOnly = true ,
-            //modifier = Modifier.clickable{}.focusable(false)
+            //modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.clickable{}.focusable(false)
         )
     }
-
-    Spacer(modifier = Modifier.height(16.dp))
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
